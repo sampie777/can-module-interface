@@ -55,6 +55,10 @@ fun drawImageInYCenter(mainGraphics2D: Graphics2D, mainHeight: Int, x: Int, buff
     mainGraphics2D.drawImage(bufferedImage, null, x, (mainHeight - bufferedImage.height) / 2)
 }
 
+fun getNumericFontHeight(fontMetrics: FontMetrics): Double {
+    return fontMetrics.height - fontMetrics.height * 0.33
+}
+
 fun getMainFrameComponent(childComponent: Component): JFrame? {
     return MainFrame.getInstance()
 }

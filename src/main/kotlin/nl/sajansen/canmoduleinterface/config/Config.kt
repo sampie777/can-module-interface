@@ -11,9 +11,13 @@ object Config {
 
     // Main window
     var mainWindowAlwaysOnTop: Boolean = false
+    var fps: Long = 30
 
     // Other
-    var updatesCheckForUpdates: Boolean = true
+    var updatesCheckForUpdates: Boolean = false
+
+    // Serial
+    var flipBytesToLong: Boolean = true
 
     fun load() {
         try {

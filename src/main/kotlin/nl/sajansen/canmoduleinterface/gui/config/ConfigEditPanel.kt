@@ -23,6 +23,10 @@ class ConfigEditPanel : JPanel() {
 
     private fun createFormInputs() {
         formComponents.add(HeaderFormComponent(""))
+        formComponents.add(HeaderFormComponent("Serial"))
+        formComponents.add(BooleanFormInput("flipBytesToLong", "Reverse serial bytes"))
+
+        formComponents.add(HeaderFormComponent(""))
         formComponents.add(HeaderFormComponent("Other"))
         formComponents.add(BooleanFormInput("mainWindowAlwaysOnTop", "Keep window always on top"))
         formComponents.add(BooleanFormInput("updatesCheckForUpdates", "Check for updates"))

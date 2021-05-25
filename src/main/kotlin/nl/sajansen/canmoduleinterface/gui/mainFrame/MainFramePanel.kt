@@ -2,6 +2,7 @@ package nl.sajansen.canmoduleinterface.gui.mainFrame
 
 import nl.sajansen.canmoduleinterface.gui.GUI
 import nl.sajansen.canmoduleinterface.gui.Refreshable
+import nl.sajansen.canmoduleinterface.gui.can.StatusPanel
 import org.slf4j.LoggerFactory
 import java.awt.BorderLayout
 import javax.swing.JPanel
@@ -21,6 +22,8 @@ class MainFramePanel : JPanel(), Refreshable {
     private fun createGui() {
         border = null
         layout = BorderLayout(10, 10)
+
+        add(StatusPanel(), BorderLayout.CENTER)
     }
 
     override fun removeNotify() {
