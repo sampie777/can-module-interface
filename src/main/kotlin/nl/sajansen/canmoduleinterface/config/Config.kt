@@ -12,6 +12,7 @@ object Config {
     // Main window
     var mainWindowAlwaysOnTop: Boolean = false
     var fps: Int = 30
+    var inactiveTimeout: Long = 5000
 
     // Other
     var updatesCheckForUpdates: Boolean = false

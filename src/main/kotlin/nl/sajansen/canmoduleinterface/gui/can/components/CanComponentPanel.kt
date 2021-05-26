@@ -1,11 +1,12 @@
 package nl.sajansen.canmoduleinterface.gui.can.components
 
 
+import nl.sajansen.canmoduleinterface.config.Config
 import nl.sajansen.canmoduleinterface.gui.Theme
 import nl.sajansen.canmoduleinterface.hardware.CanComponent
 import org.slf4j.LoggerFactory
-import java.awt.BorderLayout
-import java.awt.Color
+import java.awt.*
+import java.util.*
 import javax.swing.BorderFactory
 import javax.swing.JLabel
 import javax.swing.JPanel
@@ -50,5 +51,17 @@ class CanComponentPanel(private val component: CanComponent) : JPanel() {
         }
 
         canvas.type = types[nextTypeIndex]
+    }
+
+    override fun paintComponent(g: Graphics?) {
+        super.paintComponent(g)
+
+        if (component.lastUpdateTime.time + Config.inactiveTimeout >= Date().time) {
+            return
+        }
+
+        // Blur component a bit to not attract the focus
+        val g2 = g as Graphics2D
+        g2.composite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3f)
     }
 }

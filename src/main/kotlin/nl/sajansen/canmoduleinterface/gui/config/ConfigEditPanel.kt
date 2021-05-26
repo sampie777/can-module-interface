@@ -31,6 +31,7 @@ class ConfigEditPanel : JPanel() {
         formComponents.add(HeaderFormComponent("Other"))
         formComponents.add(BooleanFormInput("mainWindowAlwaysOnTop", "Keep window always on top"))
         formComponents.add(NumberFormInput("fps", "GUI FPS", min = 0, max = 1000, step = 1))
+        formComponents.add(NumberFormInput("inactiveTimeout", "Inactive time for components", min = 0, max = Long.MAX_VALUE, step = 500))
         formComponents.add(BooleanFormInput("updatesCheckForUpdates", "Check for updates"))
     }
 

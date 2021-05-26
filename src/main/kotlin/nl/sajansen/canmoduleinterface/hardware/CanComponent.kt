@@ -1,5 +1,6 @@
 package nl.sajansen.canmoduleinterface.hardware
 
+import java.util.*
 import kotlin.math.max
 import kotlin.math.min
 
@@ -12,12 +13,15 @@ class CanComponent(val id: Int) {
 
     var activeBitMask: Long = 0
 
+    var lastUpdateTime: Date = Date()
+
     fun update(value: Long) {
         minValue = min(minValue, value)
         maxValue = max(maxValue, value)
 
         updateBitMask(value)
 
+        lastUpdateTime = Date()
         previousValue = this.value
         this.value = value
     }
