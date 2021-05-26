@@ -12,7 +12,7 @@ import javax.swing.JLabel
 import javax.swing.JPanel
 import javax.swing.border.EmptyBorder
 
-class CanComponentPanel(private val component: CanComponent) : JPanel() {
+class CanComponentPanel(val component: CanComponent) : JPanel() {
     private val logger = LoggerFactory.getLogger(CanComponentPanel::class.java.name)
 
     private val canvas = CanComponentCanvas(component)
@@ -28,7 +28,7 @@ class CanComponentPanel(private val component: CanComponent) : JPanel() {
             BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1)
         )
 
-        val idLabel = JLabel(String.format("0x%02X", component.id))
+        val idLabel = JLabel(String.format("0x%03X", component.id))
         idLabel.font = Theme.normalFont
         idLabel.isOpaque = true
         idLabel.background = Color.WHITE
@@ -39,6 +39,7 @@ class CanComponentPanel(private val component: CanComponent) : JPanel() {
         add(idLabel, BorderLayout.LINE_START)
 
         canvas.addActionListener { switchType() }
+        canvas.cursor = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)
         add(canvas, BorderLayout.CENTER)
     }
 
@@ -56,12 +57,19 @@ class CanComponentPanel(private val component: CanComponent) : JPanel() {
     override fun paintComponent(g: Graphics?) {
         super.paintComponent(g)
 
-        if (component.lastUpdateTime.time + Config.inactiveTimeout >= Date().time) {
+        val now = Date().time
+        if (component.lastUpdateTime.time + Config.activeTimeout > now) {
             return
         }
 
         // Blur component a bit to not attract the focus
         val g2 = g as Graphics2D
-        g2.composite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3f)
+        var opacity = Config.inactiveComponentOpacity
+
+        if (component.lastUpdateTime.time > now - Config.activeTimeout - Config.inactiveTimeout) {
+            opacity = 1f - (1 - opacity) * ((now - Config.activeTimeout) - component.lastUpdateTime.time).toFloat() / Config.inactiveTimeout
+        }
+
+        g2.composite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, opacity)
     }
 }

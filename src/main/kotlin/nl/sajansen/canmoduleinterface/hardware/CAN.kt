@@ -1,6 +1,7 @@
 package nl.sajansen.canmoduleinterface.hardware
 
 import nl.sajansen.canmoduleinterface.config.Config
+import nl.sajansen.canmoduleinterface.events.EventsDispatcher
 import nl.sajansen.canmoduleinterface.events.SerialEventListener
 import nl.sajansen.canmoduleinterface.serial.SerialConnectionState
 import nl.sajansen.canmoduleinterface.serial.SerialManager
@@ -11,12 +12,7 @@ import java.nio.ByteBuffer
 object CAN : SerialManager(), SerialEventListener {
     private val logger = LoggerFactory.getLogger(CAN::class.java)
 
-    val components = arrayListOf<CanComponent>(
-        CanComponent(0x000),
-        CanComponent(0x001),
-        CanComponent(0x002),
-        CanComponent(0x003),
-    )
+    val components = arrayListOf<CanComponent>()
 
     var bootMessageProcessed = false
 
@@ -26,9 +22,7 @@ object CAN : SerialManager(), SerialEventListener {
         var component = components.find { it.id == message.id }
 
         if (component == null) {
-            logger.info("Creating new component: ${message.id}")
-            component = CanComponent(message.id)
-            components.add(component)
+            component = addNewComponent(message)
         }
 
         try {
@@ -37,6 +31,17 @@ object CAN : SerialManager(), SerialEventListener {
             logger.warn("CAN message has to much data bytes: $message")
             e.printStackTrace()
         }
+    }
+
+    fun addNewComponent(message: CanMessage): CanComponent {
+        logger.info("Creating new component: ${message.id}")
+        val component = CanComponent(message.id)
+        components.add(component)
+
+        // Do this asynchronously to optimize serial performance
+        Thread { EventsDispatcher.onComponentsListUpdated() }
+            .start()
+        return component
     }
 
     fun connect() = connect(Config.serialComPort, Config.serialComBaudRate)

@@ -28,6 +28,12 @@ object EventsDispatcher : GuiEventListener, SerialEventListener {
         }
     }
 
+    override fun onComponentsListUpdated() {
+        guiEventListeners.toTypedArray().forEach {
+            it.onComponentsListUpdated()
+        }
+    }
+
     override fun windowClosing(window: Component?) {
         guiEventListeners.toTypedArray().forEach {
             it.windowClosing(window)

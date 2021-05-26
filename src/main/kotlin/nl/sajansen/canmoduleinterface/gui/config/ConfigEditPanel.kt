@@ -22,16 +22,20 @@ class ConfigEditPanel : JPanel() {
     }
 
     private fun createFormInputs() {
-        formComponents.add(HeaderFormComponent(""))
         formComponents.add(HeaderFormComponent("Serial"))
         formComponents.add(NumberFormInput("serialComBaudRate", "Baud rate", min = 0, max = Int.MAX_VALUE, step = 100))
         formComponents.add(StringFormInput("serialStringBootDone", "Boot-done string", allowEmpty = true, toolTipText = "The string the serial device will sent when booting is finished"))
 
         formComponents.add(HeaderFormComponent(""))
+        formComponents.add(HeaderFormComponent("Graphics"))
+        formComponents.add(NumberFormInput("fps", "GUI frames per second", min = 0, max = 1000, step = 1))
+        formComponents.add(NumberFormInput("activeTimeout", "Highlight time for active component (ms)", min = 0, max = Long.MAX_VALUE, step = 500))
+        formComponents.add(NumberFormInput("inactiveTimeout", "Fade out time for inactive component (ms)", min = 0, max = Long.MAX_VALUE, step = 500))
+        formComponents.add(NumberFormInput("inactiveComponentOpacity", "Inactive component opacity", min = 0.0f, max = 1.0f, step = 0.1f))
+
+        formComponents.add(HeaderFormComponent(""))
         formComponents.add(HeaderFormComponent("Other"))
         formComponents.add(BooleanFormInput("mainWindowAlwaysOnTop", "Keep window always on top"))
-        formComponents.add(NumberFormInput("fps", "GUI FPS", min = 0, max = 1000, step = 1))
-        formComponents.add(NumberFormInput("inactiveTimeout", "Inactive time for components", min = 0, max = Long.MAX_VALUE, step = 500))
         formComponents.add(BooleanFormInput("updatesCheckForUpdates", "Check for updates"))
     }
 

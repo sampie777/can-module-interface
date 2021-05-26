@@ -33,7 +33,7 @@ class MainFrame : JFrame() {
     }
 
     private fun initGUI() {
-        setSize(660, 450)
+        setSize(695, 450)
         setLocationRelativeTo(null)
 
         add(MainFramePanel())

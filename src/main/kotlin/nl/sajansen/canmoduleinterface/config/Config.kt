@@ -12,7 +12,9 @@ object Config {
     // Main window
     var mainWindowAlwaysOnTop: Boolean = false
     var fps: Int = 30
-    var inactiveTimeout: Long = 5000
+    var activeTimeout: Long = 1000
+    var inactiveTimeout: Long = 4000
+    var inactiveComponentOpacity: Float = 0.4f
 
     // Other
     var updatesCheckForUpdates: Boolean = false

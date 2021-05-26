@@ -21,7 +21,7 @@ class MainFramePanel : JPanel(), GuiEventListener {
 
     private fun createGui() {
         border = null
-        layout = BorderLayout(10, 10)
+        layout = BorderLayout()
 
         add(StatusPanel(), BorderLayout.CENTER)
         add(StatusBar(), BorderLayout.PAGE_END)
