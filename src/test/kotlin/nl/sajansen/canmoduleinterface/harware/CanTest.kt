@@ -20,7 +20,7 @@ class CanTest {
 
     @Test
     fun `test string to CAN message`() {
-        val id = byteArrayOf(0x07)
+        val id = byteArrayOf(0x00, 0x07)
         val data = byteArrayOf(0x01, 0x012, 0x77)
         val string = String(id + data)
 
@@ -33,7 +33,7 @@ class CanTest {
 
     @Test
     fun `test string with id but no data to CAN message`() {
-        val id = byteArrayOf(0x07)
+        val id = byteArrayOf(0x00, 0x07)
         val string = String(id)
 
         val message = CAN.createCanMessageFromString(string)
@@ -53,9 +53,18 @@ class CanTest {
     }
 
     @Test
+    fun `test string which is to short to CAN message returns null`() {
+        val string = "1"
+
+        val message = CAN.createCanMessageFromString(string)
+
+        assertNull(message)
+    }
+
+    @Test
     fun `test don't process data before boot is done`() {
         CAN.components[0].value = 0
-        val id1 = byteArrayOf(CAN.components[0].id.toByte())
+        val id1 = byteArrayOf(CAN.components[0].id.shr(8).toByte(), CAN.components[0].id.toByte())
         val data1 = byteArrayOf(0x00, 0x00, 0x7)
         val string1 = String(id1 + data1)
         val data = listOf(string1, Config.serialStringBootDone)
@@ -67,7 +76,7 @@ class CanTest {
 
     @Test
     fun `test process data after boot is done`() {
-        val id1 = byteArrayOf(CAN.components[0].id.toByte())
+        val id1 = byteArrayOf(CAN.components[0].id.shr(8).toByte(), CAN.components[0].id.toByte())
         val data1 = byteArrayOf(0x00, 0x00, 18)
         val string1 = String(id1 + data1)
 
@@ -79,7 +88,7 @@ class CanTest {
 
     @Test
     fun `test process data after boot is done within same message frame`() {
-        val id1 = byteArrayOf(CAN.components[0].id.toByte())
+        val id1 = byteArrayOf(CAN.components[0].id.shr(8).toByte(), CAN.components[0].id.toByte())
         val data1 = byteArrayOf(0x00, 0x00, 18)
         val string1 = String(id1 + data1)
         val data = listOf(Config.serialStringBootDone, string1)
@@ -131,5 +140,13 @@ class CanTest {
         assertFailsWith(BufferOverflowException::class) {
             CAN.messageDataToValue(CanMessage(0, byteArrayOf(0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x12)))
         }
+    }
+
+    @Test
+    fun `test converting byte data to ID`() {
+        assertEquals(0, CAN.getIdFromByteData(byteArrayOf(0, 0, 7, 7, 7), 2))
+        assertEquals(1, CAN.getIdFromByteData(byteArrayOf(0, 1, 7, 7, 7), 2))
+        assertEquals(256, CAN.getIdFromByteData(byteArrayOf(1, 0, 7, 7, 7), 2))
+        assertEquals(258, CAN.getIdFromByteData(byteArrayOf(1, 2), 2))
     }
 }

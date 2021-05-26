@@ -20,11 +20,15 @@ object CAN : SerialManager(), SerialEventListener {
 
     var bootMessageProcessed = false
 
+    private val idByteLength = 2
+
     fun processCanMessage(message: CanMessage) {
-        val component = components.find { it.id == message.id }
+        var component = components.find { it.id == message.id }
+
         if (component == null) {
-            logger.warn("Unknown ID received: ${message.id}")
-            return
+            logger.info("Creating new component: ${message.id}")
+            component = CanComponent(message.id)
+            components.add(component)
         }
 
         try {
@@ -33,19 +37,6 @@ object CAN : SerialManager(), SerialEventListener {
             logger.warn("CAN message has to much data bytes: $message")
             e.printStackTrace()
         }
-    }
-
-    fun messageDataToValue(message: CanMessage): Long {
-        val buffer = ByteBuffer.allocate(Long.SIZE_BYTES)
-
-        // Fill empty places in buffer which will not be filled by message.data
-        for (i in message.data.size until buffer.limit()) {
-            buffer.put(0)
-        }
-
-        buffer.put(message.data)
-        buffer.flip()
-        return buffer.long
     }
 
     fun connect() = connect(Config.serialComPort, Config.serialComBaudRate)
@@ -78,14 +69,46 @@ object CAN : SerialManager(), SerialEventListener {
             logger.warn("Empty data array received")
             return null
         }
+        if (bytes.size < idByteLength) {
+            logger.warn("Data array is missing necessary ID data")
+            return null
+        }
 
-        val id = bytes[0].toInt()
-        val data = ByteArray(bytes.size - 1)
+        val id = getIdFromByteData(bytes, idByteLength)
+        val data = ByteArray(bytes.size - idByteLength)    // Minus ID size
 
         for (i in data.indices) {
-            data[i] = bytes[i + 1]
+            data[i] = bytes[i + idByteLength]
         }
 
         return CanMessage(id, data)
+    }
+
+    fun getIdFromByteData(bytes: ByteArray, idByteLength: Int): Int {
+        val buffer = ByteBuffer.allocate(Int.SIZE_BYTES)
+
+        // Fill empty places in buffer which will not be filled by message.data
+        for (i in idByteLength until buffer.limit()) {
+            buffer.put(0)
+        }
+
+        for (i in 0 until idByteLength) {
+            buffer.put(bytes[i])
+        }
+        buffer.flip()
+        return buffer.int
+    }
+
+    fun messageDataToValue(message: CanMessage): Long {
+        val buffer = ByteBuffer.allocate(Long.SIZE_BYTES)
+
+        // Fill empty places in buffer which will not be filled by message.data
+        for (i in message.data.size until buffer.limit()) {
+            buffer.put(0)
+        }
+
+        buffer.put(message.data)
+        buffer.flip()
+        return buffer.long
     }
 }
