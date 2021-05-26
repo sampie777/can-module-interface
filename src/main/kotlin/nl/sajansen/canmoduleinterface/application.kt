@@ -1,7 +1,7 @@
 package nl.sajansen.canmoduleinterface
 
 import nl.sajansen.canmoduleinterface.config.Config
-import nl.sajansen.canmoduleinterface.gui.GUI
+import nl.sajansen.canmoduleinterface.events.EventsDispatcher
 import nl.sajansen.canmoduleinterface.gui.mainFrame.MainFrame
 import nl.sajansen.canmoduleinterface.gui.notifications.Notifications
 import nl.sajansen.canmoduleinterface.updater.UpdateChecker
@@ -41,7 +41,7 @@ fun exitApplication() {
 
     try {
         logger.info("Closing windows...")
-        GUI.windowClosing(MainFrame.getInstance())
+        EventsDispatcher.windowClosing(MainFrame.getInstance())
     } catch (t: Throwable) {
         logger.warn("Failed to correctly close windows")
         t.printStackTrace()

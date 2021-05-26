@@ -18,6 +18,9 @@ object Config {
 
     // Serial
     var flipBytesToLong: Boolean = true
+    var serialComPort: String = ""
+    var serialComBaudRate: Int = 115200
+    var serialStringBootDone: String = "Ready."
 
     fun load() {
         try {

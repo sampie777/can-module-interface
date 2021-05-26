@@ -1,6 +1,6 @@
 package nl.sajansen.canmoduleinterface.gui.notifications
 
-import nl.sajansen.canmoduleinterface.gui.GUI
+import nl.sajansen.canmoduleinterface.events.EventsDispatcher
 import nl.sajansen.canmoduleinterface.gui.mainFrame.MainFrame
 import org.slf4j.LoggerFactory
 import javax.swing.JOptionPane
@@ -20,7 +20,7 @@ object Notifications {
             unreadNotifications++
         }
 
-        GUI.refreshNotifications()
+        EventsDispatcher.refreshNotifications()
     }
 
     fun add(message: String, subject: String = "", markAsRead: Boolean = false) {
@@ -30,7 +30,7 @@ object Notifications {
     fun markAllAsRead() {
         logger.info("Marking all notifications as read")
         unreadNotifications = 0
-        GUI.refreshNotifications()
+        EventsDispatcher.refreshNotifications()
     }
 
     fun clear() {

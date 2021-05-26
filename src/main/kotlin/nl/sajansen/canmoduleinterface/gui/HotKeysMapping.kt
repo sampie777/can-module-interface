@@ -7,14 +7,10 @@ enum class HotKeysMapping(val key: Int) {
     Close(KeyEvent.VK_C),
     Save(KeyEvent.VK_S),
 
-    StartServer(KeyEvent.VK_S),
-    StartClient(KeyEvent.VK_P),
-
-    OpenMap(KeyEvent.VK_M),
-    SendMapConfig(KeyEvent.VK_A),
-    PauseLobby(KeyEvent.VK_P),
-
     ApplicationMenu(KeyEvent.VK_A),
     ShowConfig(KeyEvent.VK_S),
     ShowApplicationInfo(KeyEvent.VK_I),
+
+    ChangePort(KeyEvent.VK_P),
+    Connect(KeyEvent.VK_C),
 }

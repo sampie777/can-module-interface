@@ -1,7 +1,7 @@
 package nl.sajansen.canmoduleinterface.gui.config
 
 import nl.sajansen.canmoduleinterface.config.Config
-import nl.sajansen.canmoduleinterface.gui.GUI
+import nl.sajansen.canmoduleinterface.events.EventsDispatcher
 import nl.sajansen.canmoduleinterface.gui.HotKeysMapping
 import nl.sajansen.canmoduleinterface.gui.Theme
 import nl.sajansen.canmoduleinterface.utils.gui.addHotKeyMapping
@@ -55,7 +55,7 @@ class ConfigActionPanel(private val frame: ConfigFrame) : JPanel() {
         }
 
         Config.save()
-        GUI.onConfigSettingsSaved()
+        EventsDispatcher.onConfigSettingsSaved()
         frame.dispose()
     }
 }

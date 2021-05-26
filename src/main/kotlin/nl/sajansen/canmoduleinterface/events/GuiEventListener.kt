@@ -1,10 +1,9 @@
-package nl.sajansen.canmoduleinterface.gui
+package nl.sajansen.canmoduleinterface.events
 
 import java.awt.Component
 
-interface Refreshable {
+interface GuiEventListener {
     fun refreshNotifications() {}
     fun onConfigSettingsSaved() {}
-
     fun windowClosing(window: Component?) {}
 }
