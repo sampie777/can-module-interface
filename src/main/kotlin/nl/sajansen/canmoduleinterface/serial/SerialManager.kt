@@ -6,12 +6,12 @@ import nl.sajansen.canmoduleinterface.config.Config
 import nl.sajansen.canmoduleinterface.events.EventsDispatcher
 import java.util.logging.Logger
 
-open class SerialManager {
+open class SerialManager : SerialManagerInterface {
     private val logger = Logger.getLogger(SerialManager::class.java.name)
 
     @Volatile
     private var comPort: SerialPort? = null
-    fun getComPort() = comPort
+    override fun getComPort() = comPort
 
     @Volatile
     var state: SerialConnectionState = SerialConnectionState.NotConnected
@@ -84,7 +84,7 @@ open class SerialManager {
         logger.fine("Com port buffer cleared")
     }
 
-    fun processSerialInput(data: List<String>) {
+    override fun processSerialInput(data: List<String>) {
         if (Config.serialStringBootDone in data) {
             logger.info("Serial device is done booting")
             state = SerialConnectionState.Running

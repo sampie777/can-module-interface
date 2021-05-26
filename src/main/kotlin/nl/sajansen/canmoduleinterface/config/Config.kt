@@ -11,13 +11,12 @@ object Config {
 
     // Main window
     var mainWindowAlwaysOnTop: Boolean = false
-    var fps: Long = 30
+    var fps: Int = 30
 
     // Other
     var updatesCheckForUpdates: Boolean = false
 
     // Serial
-    var flipBytesToLong: Boolean = true
     var serialComPort: String = ""
     var serialComBaudRate: Int = 115200
     var serialStringBootDone: String = "Ready."

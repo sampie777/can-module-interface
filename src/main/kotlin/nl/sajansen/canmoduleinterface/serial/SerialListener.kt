@@ -8,10 +8,12 @@ import nl.sajansen.canmoduleinterface.ApplicationRuntimeSettings
 import nl.sajansen.canmoduleinterface.events.EventsDispatcher
 import java.util.logging.Logger
 
-class SerialListener(private val manager: SerialManager) : SerialPortDataListener {
+class SerialListener(private val manager: SerialManagerInterface) : SerialPortDataListener {
     private val logger = Logger.getLogger(SerialListener::class.java.name)
 
-    private var keepAllMessages: Boolean = false
+    var messageDelimiter = "\n"
+    var keepAllMessages: Boolean = false
+
     private var currentDataLine: String = ""
     private val receivedDataLines = ArrayList<String>()
 
@@ -20,7 +22,7 @@ class SerialListener(private val manager: SerialManager) : SerialPortDataListene
     }
 
     override fun serialEvent(event: SerialPortEvent) {
-        if (event.eventType != SerialPort.LISTENING_EVENT_DATA_RECEIVED) {
+        if (event.eventType.and(listeningEvents) == 0) {
             logger.warning("Got invalid event type: ${event.eventType}")
             return
         }
@@ -31,7 +33,7 @@ class SerialListener(private val manager: SerialManager) : SerialPortDataListene
     fun onDataReceived(data: ByteArray) {
         currentDataLine += String(data)
         val messages = currentDataLine
-            .split("\n")
+            .split(messageDelimiter)
             .map { it.trim('\r') }
 
         val terminatedMessages = messages.subList(0, messages.size - 1)
@@ -48,16 +50,16 @@ class SerialListener(private val manager: SerialManager) : SerialPortDataListene
         EventsDispatcher.onSerialDataReceived(terminatedMessages)
     }
 
-    fun send(data: String) {
+    fun send(data: String) : Boolean {
         logger.fine("Sending data to serial device: $data")
         if (ApplicationRuntimeSettings.virtualSerial) {
             EventsDispatcher.onSerialDataSend(data)
-            return
+            return true
         }
 
         if (manager.getComPort() == null) {
             logger.warning("Serial device unconnected, cannot send data")
-            return
+            return false
         }
 
         val dataBytes = data.toByteArray()
@@ -68,6 +70,8 @@ class SerialListener(private val manager: SerialManager) : SerialPortDataListene
         }
 
         EventsDispatcher.onSerialDataSend(data)
+
+        return writtenBytes == dataBytes.size
     }
 
     fun clear() {

@@ -5,6 +5,7 @@ import nl.sajansen.canmoduleinterface.events.SerialEventListener
 import nl.sajansen.canmoduleinterface.serial.SerialConnectionState
 import nl.sajansen.canmoduleinterface.serial.SerialManager
 import org.slf4j.LoggerFactory
+import java.nio.BufferOverflowException
 import java.nio.ByteBuffer
 
 object CAN : SerialManager(), SerialEventListener {
@@ -17,7 +18,7 @@ object CAN : SerialManager(), SerialEventListener {
         CanComponent(0x003),
     )
 
-    private var bootMessageProcessed = false
+    var bootMessageProcessed = false
 
     fun processCanMessage(message: CanMessage) {
         val component = components.find { it.id == message.id }
@@ -26,15 +27,24 @@ object CAN : SerialManager(), SerialEventListener {
             return
         }
 
-        component.update(messageDataToValue(message))
+        try {
+            component.update(messageDataToValue(message))
+        } catch (e: BufferOverflowException) {
+            logger.warn("CAN message has to much data bytes: $message")
+            e.printStackTrace()
+        }
     }
 
-    private fun messageDataToValue(message: CanMessage): Long {
+    fun messageDataToValue(message: CanMessage): Long {
         val buffer = ByteBuffer.allocate(Long.SIZE_BYTES)
-        buffer.put(message.data)
-        if (Config.flipBytesToLong) {
-            buffer.flip()
+
+        // Fill empty places in buffer which will not be filled by message.data
+        for (i in message.data.size until buffer.limit()) {
+            buffer.put(0)
         }
+
+        buffer.put(message.data)
+        buffer.flip()
         return buffer.long
     }
 
@@ -47,11 +57,13 @@ object CAN : SerialManager(), SerialEventListener {
 
         // Only process messages after boot-done message
         if (!bootMessageProcessed && Config.serialStringBootDone in data) {
+            logger.info("Boot-done message found")
             val index = data.indexOf(Config.serialStringBootDone)
             bootMessageProcessed = true
 
             if (index != data.size - 1) {
-                onSerialDataReceived(data.subList(index + 1, data.size - 1))
+                logger.info("Processing remainder of data array")
+                onSerialDataReceived(data.subList(index + 1, data.size))
             }
             return
         }
@@ -60,7 +72,7 @@ object CAN : SerialManager(), SerialEventListener {
             .forEach(CAN::processCanMessage)
     }
 
-    private fun createCanMessageFromString(text: String): CanMessage? {
+    fun createCanMessageFromString(text: String): CanMessage? {
         val bytes = text.toByteArray()
         if (bytes.isEmpty()) {
             logger.warn("Empty data array received")

@@ -43,13 +43,5 @@ fun getReadableFileSize(file: File): String {
     }
 }
 
-fun getFileNameWithoutExtension(file: File): String {
-    return file.name.substring(0, file.name.lastIndexOf('.'))
-}
-
-fun getFileExtension(file: File): String {
-    return file.name.substring(file.name.lastIndexOf('.') + 1)
-}
-
 fun Date.format(format: String): String? = SimpleDateFormat(format).format(this)
 fun LocalTime.format(format: String): String = this.format(DateTimeFormatter.ofPattern(format))

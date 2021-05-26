@@ -66,14 +66,15 @@ object EventsDispatcher : GuiEventListener, SerialEventListener {
         }
     }
 
-    fun unregister(component: GuiEventListener) {
-        logger.info("Unregistering GuiEventListener: ${component::class.java}")
-        guiEventListeners.remove(component)
-    }
-
-    fun unregister(component: SerialEventListener) {
-        logger.info("Unregistering SerialEventListener: ${component::class.java}")
-        serialEventListeners.remove(component)
+    fun unregister(component: Any) {
+        if (component is GuiEventListener) {
+            logger.info("Unregistering GuiEventListener: ${component::class.java}")
+            guiEventListeners.remove(component)
+        }
+        if (component is SerialEventListener) {
+            logger.info("Unregistering SerialEventListener: ${component::class.java}")
+            serialEventListeners.remove(component)
+        }
     }
 
     fun registeredComponents() = guiEventListeners

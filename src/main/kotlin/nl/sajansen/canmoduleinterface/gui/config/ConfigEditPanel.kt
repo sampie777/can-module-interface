@@ -24,11 +24,13 @@ class ConfigEditPanel : JPanel() {
     private fun createFormInputs() {
         formComponents.add(HeaderFormComponent(""))
         formComponents.add(HeaderFormComponent("Serial"))
-        formComponents.add(BooleanFormInput("flipBytesToLong", "Reverse serial bytes"))
+        formComponents.add(NumberFormInput("serialComBaudRate", "Baud rate", min = 0, max = Int.MAX_VALUE, step = 100))
+        formComponents.add(StringFormInput("serialStringBootDone", "Boot-done string", allowEmpty = true, toolTipText = "The string the serial device will sent when booting is finished"))
 
         formComponents.add(HeaderFormComponent(""))
         formComponents.add(HeaderFormComponent("Other"))
         formComponents.add(BooleanFormInput("mainWindowAlwaysOnTop", "Keep window always on top"))
+        formComponents.add(NumberFormInput("fps", "GUI FPS", min = 0, max = 1000, step = 1))
         formComponents.add(BooleanFormInput("updatesCheckForUpdates", "Check for updates"))
     }
 

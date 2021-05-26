@@ -18,7 +18,7 @@ class StatusPanel : JPanel() {
     init {
         createGui()
 
-        screenUpdateTimer = Timer((Config.fps / 1000).toInt()) {
+        screenUpdateTimer = Timer((1000 / Config.fps)) {
             screenUpdateTimerStep()
         }
         screenUpdateTimer.start()
