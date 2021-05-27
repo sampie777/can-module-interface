@@ -6,10 +6,10 @@ import com.fazecast.jSerialComm.SerialPortDataListener
 import com.fazecast.jSerialComm.SerialPortEvent
 import nl.sajansen.canmoduleinterface.ApplicationRuntimeSettings
 import nl.sajansen.canmoduleinterface.events.EventsDispatcher
-import java.util.logging.Logger
+import org.slf4j.LoggerFactory
 
 class SerialListener(private val manager: SerialManagerInterface) : SerialPortDataListener {
-    private val logger = Logger.getLogger(SerialListener::class.java.name)
+    private val logger = LoggerFactory.getLogger(SerialListener::class.java.name)
 
     var messageDelimiter = "\n"
     var keepAllMessages: Boolean = false
@@ -23,7 +23,7 @@ class SerialListener(private val manager: SerialManagerInterface) : SerialPortDa
 
     override fun serialEvent(event: SerialPortEvent) {
         if (event.eventType.and(listeningEvents) == 0) {
-            logger.warning("Got invalid event type: ${event.eventType}")
+            logger.warn("Got invalid event type: ${event.eventType}")
             return
         }
 
@@ -43,7 +43,7 @@ class SerialListener(private val manager: SerialManagerInterface) : SerialPortDa
             receivedDataLines.addAll(terminatedMessages)
         }
         terminatedMessages.forEach {
-            logger.fine("Serial data: $it")
+            logger.debug("Serial data: $it")
         }
 
         manager.processSerialInput(terminatedMessages)
@@ -51,14 +51,14 @@ class SerialListener(private val manager: SerialManagerInterface) : SerialPortDa
     }
 
     fun send(data: String) : Boolean {
-        logger.fine("Sending data to serial device: $data")
+        logger.debug("Sending data to serial device: $data")
         if (ApplicationRuntimeSettings.virtualSerial) {
             EventsDispatcher.onSerialDataSend(data)
             return true
         }
 
         if (manager.getComPort() == null) {
-            logger.warning("Serial device unconnected, cannot send data")
+            logger.warn("Serial device unconnected, cannot send data")
             return false
         }
 
@@ -66,7 +66,7 @@ class SerialListener(private val manager: SerialManagerInterface) : SerialPortDa
         val writtenBytes = manager.getComPort()?.writeBytes(dataBytes, dataBytes.size.toLong())
 
         if (writtenBytes != dataBytes.size) {
-            logger.warning("Not all bytes were sent. Only $writtenBytes out of ${dataBytes.size}")
+            logger.warn("Not all bytes were sent. Only $writtenBytes out of ${dataBytes.size}")
         }
 
         EventsDispatcher.onSerialDataSend(data)
@@ -75,7 +75,7 @@ class SerialListener(private val manager: SerialManagerInterface) : SerialPortDa
     }
 
     fun clear() {
-        logger.fine("Clearing serial data buffer")
+        logger.debug("Clearing serial data buffer")
         receivedDataLines.clear()
         currentDataLine = ""
     }

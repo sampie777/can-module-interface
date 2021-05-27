@@ -15,7 +15,9 @@ class SelectFormInput<T : Any>(
     private val values: Array<T>
 ) : FormInput {
 
-    private val logger = LoggerFactory.getLogger(SelectFormInput::class.java.name)
+    companion object {
+        private val logger = LoggerFactory.getLogger(SelectFormInput::class.java.name)
+    }
 
     private val selectBox = JComboBox<Any>()
 

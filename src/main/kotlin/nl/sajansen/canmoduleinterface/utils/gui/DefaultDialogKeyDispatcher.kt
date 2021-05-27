@@ -10,7 +10,9 @@ import javax.swing.KeyStroke
 
 class DefaultDialogKeyDispatcher(private val frame: Window) : KeyEventDispatcher {
 
-    private val logger = LoggerFactory.getLogger(DefaultDialogKeyDispatcher::class.java.name)
+    companion object {
+        private val logger = LoggerFactory.getLogger(DefaultDialogKeyDispatcher::class.java.name)
+    }
 
     private val keyEvents = HashMap<Int, (e: KeyEvent) -> Unit>()
     private val keyStrokes = HashMap<KeyStroke, (e: KeyEvent) -> Unit>()
@@ -54,9 +56,8 @@ class DefaultDialogKeyDispatcher(private val frame: Window) : KeyEventDispatcher
         } catch (e: Exception) {
             logger.warn("Failed to execute keystroke: ${keyEvent.keyCode}")
             e.printStackTrace()
-        } finally {
-            return false
         }
+        return false
     }
 
     private fun getKeyStroke(keyEvent: KeyEvent): ((KeyEvent) -> Unit)? {

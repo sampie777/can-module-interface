@@ -15,7 +15,9 @@ class StringFormInput(
     private val allowEmpty: Boolean,
     private val toolTipText: String = ""
 ) : FormInput {
-    private val logger = LoggerFactory.getLogger(StringFormInput::class.java.name)
+    companion object {
+        private val logger = LoggerFactory.getLogger(StringFormInput::class.java.name)
+    }
 
     private val input = JTextField()
 

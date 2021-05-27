@@ -16,7 +16,9 @@ class ColorFormInput(
     override val key: String,
     private val labelText: String
 ) : FormInput {
-    private val logger = LoggerFactory.getLogger(ColorFormInput::class.java.name)
+    companion object {
+        private val logger = LoggerFactory.getLogger(ColorFormInput::class.java.name)
+    }
 
     private lateinit var color: Color
     private val button = JButton()

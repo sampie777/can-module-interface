@@ -16,7 +16,9 @@ class NumberFormInput<T : Number>(
     private val max: T?,
     private val step: T?,
 ) : FormInput {
-    private val logger = LoggerFactory.getLogger(NumberFormInput::class.java.name)
+    companion object {
+        private val logger = LoggerFactory.getLogger(NumberFormInput::class.java.name)
+    }
 
     private val input = JSpinner()
 

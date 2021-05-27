@@ -13,7 +13,9 @@ import javax.swing.JPanel
 import javax.swing.border.EmptyBorder
 
 class CanComponentPanel(val component: CanComponent) : JPanel() {
-    private val logger = LoggerFactory.getLogger(CanComponentPanel::class.java.name)
+    companion object {
+        private val logger = LoggerFactory.getLogger(CanComponentPanel::class.java.name)
+    }
 
     private val canvas = CanComponentCanvas(component)
 

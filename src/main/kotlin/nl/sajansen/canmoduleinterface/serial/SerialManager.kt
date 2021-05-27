@@ -4,10 +4,10 @@ import com.fazecast.jSerialComm.SerialPort
 import nl.sajansen.canmoduleinterface.ApplicationRuntimeSettings
 import nl.sajansen.canmoduleinterface.config.Config
 import nl.sajansen.canmoduleinterface.events.EventsDispatcher
-import java.util.logging.Logger
+import org.slf4j.LoggerFactory
 
 open class SerialManager : SerialManagerInterface {
-    private val logger = Logger.getLogger(SerialManager::class.java.name)
+    private val logger = LoggerFactory.getLogger(SerialManager::class.java.name)
 
     @Volatile
     private var comPort: SerialPort? = null
@@ -43,7 +43,7 @@ open class SerialManager : SerialManagerInterface {
 
         comPort = SerialPort.getCommPorts().find { it.systemPortName == port }
         if (comPort == null) {
-            logger.severe("Serial port '$port' not found")
+            logger.error("Serial port '$port' not found")
             state = SerialConnectionState.NotConnected
             return false
         }
@@ -52,7 +52,7 @@ open class SerialManager : SerialManagerInterface {
         val connected = comPort!!.openPort()
 
         if (!connected) {
-            logger.severe("Could not connect to serial port '$port'")
+            logger.error("Could not connect to serial port '$port'")
             state = SerialConnectionState.NotConnected
             return false
         }
@@ -75,13 +75,13 @@ open class SerialManager : SerialManagerInterface {
     }
 
     fun clearComPort() {
-        logger.fine("Clearing com port buffer...")
+        logger.debug("Clearing com port buffer...")
         while (comPort!!.bytesAvailable() > 0) {
             val byteBuffer = ByteArray(comPort!!.bytesAvailable())
             comPort?.readBytes(byteBuffer, byteBuffer.size.toLong())
         }
         serialListener.clear()
-        logger.fine("Com port buffer cleared")
+        logger.debug("Com port buffer cleared")
     }
 
     override fun processSerialInput(data: List<String>) {

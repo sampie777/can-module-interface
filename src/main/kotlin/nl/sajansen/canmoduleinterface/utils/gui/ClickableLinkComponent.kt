@@ -10,7 +10,9 @@ import javax.swing.SwingConstants
 
 
 class ClickableLinkComponent(linkText: String, private val url: String) : JButton() {
-    private val logger = LoggerFactory.getLogger(ClickableLinkComponent::class.java.name)
+    companion object {
+        private val logger = LoggerFactory.getLogger(ClickableLinkComponent::class.java.name)
+    }
 
     init {
         text = linkText

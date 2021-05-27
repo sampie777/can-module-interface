@@ -16,7 +16,9 @@ class BooleanFormInput(
     private val labelText: String,
     private val toolTipText: String = ""
 ) : FormInput {
-    private val logger = LoggerFactory.getLogger(BooleanFormInput::class.java.name)
+    companion object {
+        private val logger = LoggerFactory.getLogger(BooleanFormInput::class.java.name)
+    }
 
     private val input = JCheckBox()
 

@@ -12,7 +12,9 @@ import java.awt.image.BufferedImage
 import javax.swing.JButton
 
 class CanComponentCanvas(private val component: CanComponent) : JButton() {
-    private val logger = LoggerFactory.getLogger(CanComponentCanvas::class.java.name)
+    companion object {
+        private val logger = LoggerFactory.getLogger(CanComponentCanvas::class.java.name)
+    }
 
     enum class Type {
         Analog,

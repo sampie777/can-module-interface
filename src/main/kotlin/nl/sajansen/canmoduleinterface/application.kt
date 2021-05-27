@@ -4,6 +4,7 @@ import nl.sajansen.canmoduleinterface.config.Config
 import nl.sajansen.canmoduleinterface.events.EventsDispatcher
 import nl.sajansen.canmoduleinterface.gui.mainFrame.MainFrame
 import nl.sajansen.canmoduleinterface.gui.notifications.Notifications
+import nl.sajansen.canmoduleinterface.hardware.CAN
 import nl.sajansen.canmoduleinterface.updater.UpdateChecker
 import nl.sajansen.canmoduleinterface.utils.getCurrentJarDirectory
 import org.slf4j.LoggerFactory
@@ -36,6 +37,8 @@ fun main(args: Array<String>) {
 
 fun exitApplication() {
     logger.info("Shutting down application")
+
+    CAN.disconnect()
 
     MainFrame.getInstance()?.saveWindowPosition()
 
